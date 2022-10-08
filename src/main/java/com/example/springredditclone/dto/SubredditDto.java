@@ -6,6 +6,9 @@ public class SubredditDto {
     private String description;
     private Integer numberOfPosts;
 
+    public SubredditDto() {
+    }
+
     public SubredditDto(Long id, String name, String description, Integer numberOfPosts) {
         this.id = id;
         this.name = name;

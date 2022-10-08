@@ -59,4 +59,24 @@ public class Subreddit {
         return posts.size();
     }
 
+    public List<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
 }
