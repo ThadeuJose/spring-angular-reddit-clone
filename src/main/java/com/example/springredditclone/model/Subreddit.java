@@ -33,4 +33,30 @@ public class Subreddit {
 
     @ManyToOne(fetch = LAZY)
     private User user;
+
+    public Subreddit() {
+    }
+
+    public Subreddit(@NotBlank(message = "Community name is required") String name,
+            @NotBlank(message = "Description is required") String description) {
+        this.name = name;
+        this.description = description;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public Integer getNumberOfPosts() {
+        return posts.size();
+    }
+
 }
