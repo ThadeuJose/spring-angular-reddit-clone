@@ -14,7 +14,7 @@ import com.example.springredditclone.model.Subreddit;
 public interface SubredditMapper {
 
     @Mapping(target = "numberOfPosts", expression = "java(mapPosts(subreddit.getPosts()))")
-    SubredditDto mapSubredditDto(Subreddit subreddit);
+    SubredditDto mapSubredditToDto(Subreddit subreddit);
 
     default Integer mapPosts(List<Post> numberOfPosts) {
         return numberOfPosts.size();

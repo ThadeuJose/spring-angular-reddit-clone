@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.springredditclone.dto.SubredditDto;
+import com.example.springredditclone.exception.SpringRedditException;
 import com.example.springredditclone.mapper.SubredditMapper;
 import com.example.springredditclone.model.Subreddit;
 import com.example.springredditclone.repository.SubredditRepository;
@@ -31,8 +32,14 @@ public class SubredditService {
 
     @Transactional(readOnly = true)
     public List<SubredditDto> getAll() {
-        return subredditRepository.findAll().stream().map(subredditMapper::mapSubredditDto)
+        return subredditRepository.findAll().stream().map(subredditMapper::mapSubredditToDto)
                 .collect(Collectors.toList());
+    }
+
+    public SubredditDto getSubreddit(Long id) {
+        Subreddit subreddit = subredditRepository.findById(id)
+                .orElseThrow(() -> new SpringRedditException("No subreddit found with id: " + id));
+        return subredditMapper.mapSubredditToDto(subreddit);
     }
 
 }
