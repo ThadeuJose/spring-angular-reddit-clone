@@ -95,7 +95,12 @@
 			<artifactId>spring-boot-devtools</artifactId>
 			<optional>true</optional>
 		</dependency>
-
+		<!-- https://mvnrepository.com/artifact/org.ocpsoft.prettytime/prettytime -->
+		<dependency>
+			<groupId>org.ocpsoft.prettytime</groupId>
+			<artifactId>prettytime</artifactId>
+			<version>5.0.6.Final</version>
+		</dependency>
 	</dependencies>
 
 	<build>
