@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.springredditclone.dto.AuthenticationResponse;
 import com.example.springredditclone.dto.LoginRequest;
+import com.example.springredditclone.dto.RefreshTokenRequest;
 import com.example.springredditclone.dto.RegisterRequest;
 import com.example.springredditclone.exception.SpringRedditException;
 import com.example.springredditclone.model.NotificationEmail;
@@ -36,16 +37,19 @@ public class AuthService {
     private final MailService mailService;
     private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtProvider;
+    private final RefreshTokenService refreshTokenService;
 
     public AuthService(PasswordEncoder passwordEncoder, UserRepository userRepository,
             VerificationTokenRepository verificationTokenRepository, MailService mailService,
-            AuthenticationManager authenticationManager, JwtProvider jwtProvider) {
+            AuthenticationManager authenticationManager, JwtProvider jwtProvider,
+            RefreshTokenService refreshTokenService) {
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
         this.verificationTokenRepository = verificationTokenRepository;
         this.mailService = mailService;
         this.authenticationManager = authenticationManager;
         this.jwtProvider = jwtProvider;
+        this.refreshTokenService = refreshTokenService;
     }
 
     public void signup(RegisterRequest registerRequest) {
@@ -106,7 +110,9 @@ public class AuthService {
 
         SecurityContextHolder.getContext().setAuthentication(authenticate);
         String token = jwtProvider.generateToken(authenticate);
-        return new AuthenticationResponse(token, loginRequest.getUsername());
+        String refreshToken = refreshTokenService.generateRefreshToken().getToken();
+        Instant expiresAt = Instant.now().plusMillis(jwtProvider.getJwtExpirationInMillis());
+        return new AuthenticationResponse(token, refreshToken, expiresAt, username);
     }
 
     @Transactional(readOnly = true)
@@ -118,6 +124,15 @@ public class AuthService {
         // SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return userRepository.findByUsername(principal.getUsername())
                 .orElseThrow(() -> new UsernameNotFoundException("User name not found - " + principal.getUsername()));
+    }
+
+    public AuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
+        refreshTokenService.validateRefreshToken(refreshTokenRequest.getRefreshToken());
+        String token = jwtProvider.generateTokenWithUserName(refreshTokenRequest.getUsername());
+        String refreshToken = refreshTokenService.generateRefreshToken().getToken();
+        Instant expiresAt = Instant.now().plusMillis(jwtProvider.getJwtExpirationInMillis());
+        String username = refreshTokenRequest.getUsername();
+        return new AuthenticationResponse(token, refreshToken, expiresAt, username);
     }
 
     public boolean isLoggedIn() {

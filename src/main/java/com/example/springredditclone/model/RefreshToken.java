@@ -18,4 +18,17 @@ public class RefreshToken {
     private String token;
 
     private Instant createdDate;
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public void setCreatedDate(Instant createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
 }

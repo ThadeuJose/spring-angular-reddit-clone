@@ -14,6 +14,7 @@ import java.security.cert.CertificateException;
 
 import javax.annotation.PostConstruct;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,9 @@ import io.jsonwebtoken.Jwts;
 public class JwtProvider {
 
     private KeyStore keyStore;
+
+    @Value("${jwt.expiration.time}")
+    private Long jwtExpirationInMillis;
 
     @PostConstruct
     public void init() {
@@ -42,7 +46,11 @@ public class JwtProvider {
 
     public String generateToken(Authentication authentication) {
         User principal = (User) authentication.getPrincipal();
-        return Jwts.builder().setSubject(principal.getUsername()).signWith(getPrivateKey()).compact();
+        return generateTokenWithUserName(principal.getUsername());
+    }
+
+    public String generateTokenWithUserName(String username) {
+        return Jwts.builder().setSubject(username).signWith(getPrivateKey()).compact();
     }
 
     private PrivateKey getPrivateKey() {
@@ -73,6 +81,10 @@ public class JwtProvider {
                 .getBody();
 
         return claims.getSubject();
+    }
+
+    public Long getJwtExpirationInMillis() {
+        return jwtExpirationInMillis;
     }
 
 }
