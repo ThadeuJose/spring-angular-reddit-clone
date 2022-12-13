@@ -1,5 +1,5 @@
 # spring-angular-reddit-clone
-Repository with code from tutorial
+Back end project to [Front end with Angular](https://github.com/ThadeuJose/angular-reddit-clone)
 
-[Source](https://www.youtube.com/watch?v=DKlTBBuc32c&t=2869s)
+Repository with code from [tutorial](https://www.youtube.com/watch?v=DKlTBBuc32c).
 
